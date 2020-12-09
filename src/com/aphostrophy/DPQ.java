@@ -155,10 +155,6 @@ public class DPQ {
 
         adj.get(8).add(new Node(5,7));
 
-
-
-
-
         //Case 2
 //        adj.get(0).add(new Node(1,10));
 //        adj.get(0).add(new Node(2,6));
@@ -283,6 +279,8 @@ public class DPQ {
         // Calculate the single source shortest path
 
         int graph[][] = new int[M+1][M+1];
+        int arr[] = new int[M];
+        int indexCounter = 0;
 
         Scanner s = new Scanner(System.in);
         int [] destinations = new int[M+1];
@@ -304,8 +302,6 @@ public class DPQ {
                 System.out.println(j + " to " + i + " is "
                         + dpq.dist[i]);
                 if (contains(destinations, j, i)) {
-                    System.out.println(j);
-                    System.out.println(i);
                     int newj = getId(destinations, j);
                     int newi = getId(destinations, i);
                     subAdj.get(newj).add(new Node(newi, dpq.dist[i]));
@@ -324,8 +320,13 @@ public class DPQ {
                 int oldi = destinations[i];
                 System.out.println(oldj + " to " + oldi + " is " + dpq.dist[i]);
             }
+            if(j!=0){
+                arr[indexCounter] = destinations[j];
+                indexCounter++;
+            }
         }
 
+        // Comparing subgraph to graph matrix
         for(int i=0;i<M+1;i++){
             System.out.println("The shortest path from node :");
             for(int j=0;j<M+1;j++){
@@ -334,6 +335,25 @@ public class DPQ {
                 System.out.println(oldi + " to " + oldj + " is " + graph[j][i]);
             }
         }
+
+        Permutation pa = new Permutation();
+        List<List<Integer>> permute = pa.permute(arr);
+
+        System.out.println("Permutations of sequence are:");
+        System.out.println("=========================================");
+        for(List<Integer> perm:permute)
+        {
+            System.out.print(perm + " -> ");
+            int nodePositionMarker=source;
+            int totalCost=0;
+            for(int i=0;i<M;i++){
+                totalCost +=  graph[getId(destinations,nodePositionMarker)][getId(destinations, perm.get(i))];
+                nodePositionMarker = perm.get(i);
+            }
+            System.out.println(totalCost);
+        }
+
+
     }
 }
 
