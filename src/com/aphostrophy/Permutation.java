@@ -26,7 +26,7 @@ public class Permutation {
     }
 
     public void path (List<Integer> arr){
-        
+
     }
 
     private void permuteHelper(List<List<Integer>> list, List<Integer> resultList, int [] arr){
