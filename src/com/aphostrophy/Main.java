@@ -190,7 +190,7 @@ public class Main {
 
         // Calculate the single source shortest path
 
-        int graph[][] = new int[M+1][M+1];
+        double graph[][] = new double[M+1][M+1];
         int arr[] = new int[M];
         int indexCounter = 0;
 
@@ -267,6 +267,16 @@ public class Main {
             System.out.println(totalCost);
         }
         long endTime = System.currentTimeMillis();
-        System.out.println(endTime - startTime);
+
+        System.out.println(GFG.travellingSalesmanProblem(graph,0,M+1));
+        System.out.println("Dijkstra Runtime: " +  Double.toString(endTime - startTime));
+
+        TSP solver = new TSP(0, graph);
+
+        // Prints: [0, 3, 2, 4, 1, 5, 0]
+        System.out.println("Tour: " + solver.getTour());
+
+        // Print: 42.0
+        System.out.println("Tour cost: " + solver.getTourCost());
     }
 }
