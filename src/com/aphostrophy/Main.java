@@ -22,7 +22,7 @@ public class Main {
         List<List<Node> > subAdj = new ArrayList<List<Node>>();
 
         List<List<NodeStar>> starAdj = new ArrayList<List<NodeStar>>();
-        List<List<Node>> starSubAdj = new ArrayList<List<Node>>();
+        List<List<NodeStar>> starSubAdj = new ArrayList<List<NodeStar>>();
 
         // Inputs for the DPQ graph
 
@@ -41,7 +41,7 @@ public class Main {
 
             for (int i = 0;i< M+1;i++){
                 List<Node> item = new ArrayList<Node>();
-                List<Node> starItem = new ArrayList<>();
+                List<NodeStar> starItem = new ArrayList<>();
                 subAdj.add(item);
                 starSubAdj.add(starItem);
             }
@@ -84,7 +84,7 @@ public class Main {
         for(int i=0;i<M+1;i++){
             System.out.println(destinations[i]);
         }
-        long startTime = System.currentTimeMillis();
+        long startTime = System.nanoTime();
 
         for(int j=0;j<V;j++) {
             DPQ dpq = new DPQ(V);
@@ -109,28 +109,21 @@ public class Main {
         for(int j=0;j<M+1;j++){
             DPQ dpq = new DPQ(M+1);
             dpq.dijkstra(subAdj, j);
-            System.out.println("The shortest path from node :");
-            for( int i = 0; i < dpq.dist.length; i++){
-                int oldj = destinations[j];
-                int oldi = destinations[i];
-                System.out.println(oldj + " to " + oldi + " is " + dpq.dist[i]);
-            }
             if(j!=0){
                 arr[indexCounter] = destinations[j];
                 indexCounter++;
             }
         }
+        System.out.println("Cost : " + GFG.travellingSalesmanProblem(graph,0,M+1));
+        long endTime = System.nanoTime();
 
-        long endTime = System.currentTimeMillis();
-
-        System.out.println(GFG.travellingSalesmanProblem(graph,0,M+1));
-        System.out.println("Dijkstra Runtime: " +  Double.toString(endTime - startTime));
+        System.out.println("Dijkstra BF Runtime: " +  Double.toString(endTime - startTime));
 
         graph = new double[M+1][M+1];
         arr = new int[M];
         indexCounter = 0;
 
-        long starStartTime = System.currentTimeMillis();
+        long starStartTime = System.nanoTime();
 
         for(int j=0;j<V;j++) {
             AS as = new AS(V);
@@ -141,7 +134,7 @@ public class Main {
                 if (AS.contains(destinations, j, i)) {
                     int newj = AS.getId(destinations, j);
                     int newi = AS.getId(destinations, i);
-                    starSubAdj.get(newj).add(new Node(newi, as.dist[i]));
+                    starSubAdj.get(newj).add(new NodeStar(newi, as.dist[i],HN.get(i)));
                     graph[newi][newj] = as.dist[i];
                 }
             }
@@ -149,14 +142,8 @@ public class Main {
 
         // Printing the new sub graph
         for(int j=0;j<M+1;j++){
-            DPQ dpq = new DPQ(M+1);
-            dpq.dijkstra(starSubAdj, j);
-            System.out.println("The shortest path from node :");
-            for( int i = 0; i < dpq.dist.length; i++){
-                int oldj = destinations[j];
-                int oldi = destinations[i];
-                System.out.println(oldj + " to " + oldi + " is " + dpq.dist[i]);
-            }
+            AS as = new AS(M+1);
+            as.astar(starSubAdj, j,HN);
             if(j!=0){
                 arr[indexCounter] = destinations[j];
                 indexCounter++;
@@ -164,10 +151,8 @@ public class Main {
         }
         TSP solver = new TSP(0, graph);
 
-        System.out.println("Tour: " + solver.getTour());
-
         System.out.println("Tour cost: " + solver.getTourCost());
-        long starEndTime = System.currentTimeMillis();
-        System.out.println("Dijkstra Runtime: " +  Double.toString(starEndTime - starStartTime));
+        long starEndTime = System.nanoTime();
+        System.out.println("AStar DP Runtime: " +  Double.toString(starEndTime - starStartTime));
     }
 }
