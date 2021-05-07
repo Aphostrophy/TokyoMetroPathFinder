@@ -2,23 +2,23 @@
 // using Priority Queue
 package com.aphostrophy;
 import java.util.*;
-public class DPQ {
+public class AS {
     public double dist[];
     public Set<Integer> settled;
-    public PriorityQueue<Node> pq;
-    List<List<Node>> adj;
+    public PriorityQueue<NodeStar> pq;
+    List<List<NodeStar>> adj;
     public int V;
 
-    public DPQ(int V)
+    public AS(int V)
     {
         this.V = V;
         dist = new double[V];
         settled = new HashSet<Integer>();
-        pq = new PriorityQueue<Node>(V, new Node());
+        pq = new PriorityQueue<NodeStar>(V, new NodeStar());
     }
 
     // Function for Dijkstra's Algorithm
-    public void dijkstra(List<List<Node> > adj, int src)
+    public void astar(List<List<NodeStar> > adj, int src, HashMap<Integer,Double> hn)
     {
         this.adj = adj;
 
@@ -26,7 +26,7 @@ public class DPQ {
             dist[i] = Integer.MAX_VALUE;
 
         // Add source node to the priority queue
-        pq.add(new Node(src, 0));
+        pq.add(new NodeStar(src, 0,hn.get(src)));
 
         // Distance to the source is 0
         dist[src] = 0;
@@ -40,20 +40,20 @@ public class DPQ {
             // finalized
             settled.add(u);
 
-            e_Neighbours(u);
+            e_Neighbours(u,hn);
         }
     }
 
     // Function to process all the neighbours
     // of the passed node
-    private void e_Neighbours(int u)
+    private void e_Neighbours(int u, HashMap<Integer, Double> hn)
     {
         double edgeDistance = -1;
         double newDistance = -1;
 
         // All the neighbors of v
         for (int i = 0; i < adj.get(u).size(); i++) {
-            Node v = adj.get(u).get(i);
+            NodeStar v = adj.get(u).get(i);
 
             // If current node hasn't already been processed
             if (!settled.contains(v.node)) {
@@ -65,7 +65,7 @@ public class DPQ {
                     dist[v.node] = newDistance;
 
                 // Add the current node to the queue
-                pq.add(new Node(v.node, dist[v.node]));
+                pq.add(new NodeStar(v.node, dist[v.node],hn.get(v.node)));
             }
         }
     }

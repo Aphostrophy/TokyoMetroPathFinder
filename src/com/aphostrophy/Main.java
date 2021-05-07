@@ -1,6 +1,9 @@
 package com.aphostrophy;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,185 +11,63 @@ public class Main {
 
     public static void main(String arg[])
     {
-        int V = 21;
+        int V = 0;
         int M = 4;
         int source = 0;
+        HashMap<Integer,Double> HN = new HashMap<>();
 
         // Adjacency list representation of the
         // connected edges
         List<List<Node>> adj = new ArrayList<List<Node> >();
         List<List<Node> > subAdj = new ArrayList<List<Node>>();
 
-        // Initialize list for every node
-        for (int i = 0; i < V; i++) {
-            List<Node> item = new ArrayList<Node>();
-            adj.add(item);
-        }
-
-        for (int i = 0;i< M+1;i++){
-            List<Node> item = new ArrayList<Node>();
-            subAdj.add(item);
-        }
+        List<List<NodeStar>> starAdj = new ArrayList<List<NodeStar>>();
+        List<List<Node>> starSubAdj = new ArrayList<List<Node>>();
 
         // Inputs for the DPQ graph
 
+        try {
+            File myObj = new File("src/com/aphostrophy/map.txt");
+            Scanner myReader = new Scanner(myObj);
+            String num = myReader.nextLine();
+            // Initialize list for every node
+            V = Integer.parseInt(num);
+            for (int i = 0; i < V; i++) {
+                List<Node> item = new ArrayList<Node>();
+                List<NodeStar> starItem = new ArrayList<>();
+                adj.add(item);
+                starAdj.add(starItem);
+            }
+
+            for (int i = 0;i< M+1;i++){
+                List<Node> item = new ArrayList<Node>();
+                List<Node> starItem = new ArrayList<>();
+                subAdj.add(item);
+                starSubAdj.add(starItem);
+            }
+            int i = 0;
+            while(myReader.hasNextLine()){
+                String data = myReader.nextLine();
+                if(data.equals("=")){
+                    break;
+                }
+                HN.put(i,Double.parseDouble(data));
+                i++;
+            }
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                String[] row = data.split(" ");
+                adj.get(Integer.parseInt(row[0])).add(new Node(Integer.parseInt(row[1]),Double.parseDouble(row[2])));
+                starAdj.get(Integer.parseInt(row[0])).add(new NodeStar(Integer.parseInt(row[1]),Double.parseDouble(row[2]),HN.get(Integer.parseInt(row[0]))));
+            }
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+            System.exit(0);
+        }
+
         // Case 1
-
-//        adj.get(0).add(new Node(3,7));
-//        adj.get(0).add(new Node(4,1));
-//        adj.get(0).add(new Node(7,2));
-//
-//        adj.get(1).add(new Node(2,9));
-//        adj.get(1).add(new Node(6,7));
-//
-//        adj.get(2).add(new Node(1,9));
-//        adj.get(2).add(new Node(3,2));
-//        adj.get(2).add(new Node(6,2));
-//
-//        adj.get(3).add(new Node(0,7));
-//        adj.get(3).add(new Node(2,2));
-//        adj.get(3).add(new Node(7,5));
-//
-//        adj.get(4).add(new Node(0,1));
-//        adj.get(4).add(new Node(5,5));
-//        adj.get(4).add(new Node(6,6));
-//
-//        adj.get(5).add(new Node(4,5));
-//        adj.get(5).add(new Node(6,8));
-//        adj.get(5).add(new Node(7,3));
-//        adj.get(5).add(new Node(8,7));
-//
-//        adj.get(6).add(new Node(1,7));
-//        adj.get(6).add(new Node(2,2));
-//        adj.get(6).add(new Node(4,6));
-//        adj.get(6).add(new Node(5,8));
-//
-//        adj.get(7).add(new Node(0,2));
-//        adj.get(7).add(new Node(3,5));
-//        adj.get(7).add(new Node(5,3));
-//
-//        adj.get(8).add(new Node(5,7));
-
-        //Case 2
-//        adj.get(0).add(new Node(1,10));
-//        adj.get(0).add(new Node(2,6));
-//        adj.get(0).add(new Node(3,2));
-//
-//        adj.get(1).add(new Node(0,10));
-//        adj.get(1).add(new Node(4,7));
-//
-//        adj.get(2).add(new Node(5,3));
-//        adj.get(2).add(new Node(0,6));
-//
-//        adj.get(3).add(new Node(5,5));
-//        adj.get(3).add(new Node(0,2));
-//
-//        adj.get(4).add(new Node(5,2));
-//        adj.get(4).add(new Node(6,5));
-//        adj.get(4).add(new Node(7,6));
-//        adj.get(4).add(new Node(1,7));
-//
-//        adj.get(5).add(new Node(2,3));
-//        adj.get(5).add(new Node(3,5));
-//        adj.get(5).add(new Node(4,2));
-//        adj.get(5).add(new Node(7,4));
-//        adj.get(5).add(new Node(8,12));
-//
-//        adj.get(6).add(new Node(4,5));
-//        adj.get(6).add(new Node(7,3));
-//
-//        adj.get(7).add(new Node(4,6));
-//        adj.get(7).add(new Node(5,4));
-//        adj.get(7).add(new Node(6,3));
-//        adj.get(7).add(new Node(8,5));
-//
-//        adj.get(8).add(new Node(7,5));
-//        adj.get(8).add(new Node(5,12));
-
-        // Tokyo Metro
-
-        adj.get(0).add(new Node(1,0));
-
-        adj.get(1).add(new Node(0,0));
-        adj.get(1).add(new Node(2, 0));
-        adj.get(1).add(new Node(6,170));
-        adj.get(1).add(new Node(15,180));
-
-        adj.get(2).add(new Node(1,0));
-
-        adj.get(3).add(new Node(4,0));
-        adj.get(3).add(new Node(7,170));
-        adj.get(3).add(new Node(12,170));
-        adj.get(3).add(new Node(16,170));
-
-        adj.get(4).add(new Node(3,0));
-        adj.get(4).add(new Node(5,0));
-
-        adj.get(5).add(new Node(4,0));
-        adj.get(5).add(new Node(9,170));
-        adj.get(5).add(new Node(11,170));
-        adj.get(5).add(new Node(18,170));
-
-        adj.get(6).add(new Node(1,170));
-        adj.get(6).add(new Node(7,0));
-        adj.get(6).add(new Node(15,170));
-
-        adj.get(7).add(new Node(6,0));
-        adj.get(7).add(new Node(3,170));
-        adj.get(7).add(new Node(8,0));
-        adj.get(7).add(new Node(12,170));
-        adj.get(7).add(new Node(16,170));
-
-        adj.get(8).add(new Node(7,0));
-        adj.get(8).add(new Node(9,0));
-
-        adj.get(9).add(new Node(5,170));
-        adj.get(9).add(new Node(8,0));
-        adj.get(9).add(new Node(10,0));
-        adj.get(9).add(new Node(11,170));
-        adj.get(9).add(new Node(18,170));
-
-        adj.get(10).add(new Node(9,0));
-
-        adj.get(11).add(new Node(5,170));
-        adj.get(11).add(new Node(9, 170));
-        adj.get(11).add(new Node(18,170));
-
-        adj.get(12).add(new Node(3,170));
-        adj.get(12).add(new Node(7,170));
-        adj.get(12).add(new Node(16,170));
-
-        adj.get(13).add(new Node(14,170));
-        adj.get(13).add(new Node(17,0));
-
-        adj.get(14).add(new Node(13,170));
-        adj.get(14).add(new Node(19,0));
-
-        adj.get(15).add(new Node(1,180));
-        adj.get(15).add(new Node(6,170));
-        adj.get(15).add(new Node(16,0));
-
-        adj.get(16).add(new Node(3,170));
-        adj.get(16).add(new Node(7,170));
-        adj.get(16).add(new Node(12,170));
-        adj.get(16).add(new Node(15,0));
-        adj.get(16).add(new Node(17,0));
-
-        adj.get(17).add(new Node(13,0));
-        adj.get(17).add(new Node(16,0));
-        adj.get(17).add(new Node(19,170));
-
-        adj.get(18).add(new Node(5,170));
-        adj.get(18).add(new Node(9,170));
-        adj.get(18).add(new Node(11,170));
-        adj.get(18).add(new Node(19,0));
-
-        adj.get(19).add(new Node(17,170));
-        adj.get(19).add(new Node(18,0));
-        adj.get(19).add(new Node(20,0));
-        adj.get(19).add(new Node(14,0));
-
-        adj.get(20).add(new Node(19,0));
 
         // Calculate the single source shortest path
 
@@ -240,43 +121,53 @@ public class Main {
             }
         }
 
-        // Comparing subgraph to graph matrix
-//        for(int i=0;i<M+1;i++){
-//            System.out.println("The shortest path from node :");
-//            for(int j=0;j<M+1;j++){
-//                int oldj = destinations[j];
-//                int oldi = destinations[i];
-//                System.out.println(oldi + " to " + oldj + " is " + graph[j][i]);
-//            }
-//        }
-
-        Permutation pa = new Permutation();
-        List<List<Integer>> permute = pa.permute(arr);
-
-        System.out.println("Permutations of sequence are:");
-        System.out.println("=========================================");
-        for(List<Integer> perm:permute)
-        {
-            System.out.print(perm + " -> ");
-            int nodePositionMarker=source;
-            int totalCost=0;
-            for(int i=0;i<M;i++){
-                totalCost +=  graph[DPQ.getId(destinations,nodePositionMarker)][DPQ.getId(destinations, perm.get(i))];
-                nodePositionMarker = perm.get(i);
-            }
-            System.out.println(totalCost);
-        }
         long endTime = System.currentTimeMillis();
 
         System.out.println(GFG.travellingSalesmanProblem(graph,0,M+1));
         System.out.println("Dijkstra Runtime: " +  Double.toString(endTime - startTime));
 
+        graph = new double[M+1][M+1];
+        arr = new int[M];
+        indexCounter = 0;
+
+        long starStartTime = System.currentTimeMillis();
+
+        for(int j=0;j<V;j++) {
+            AS as = new AS(V);
+            as.astar(starAdj, j,HN);
+
+
+            for (int i = 0; i < as.dist.length; i++) {
+                if (AS.contains(destinations, j, i)) {
+                    int newj = AS.getId(destinations, j);
+                    int newi = AS.getId(destinations, i);
+                    starSubAdj.get(newj).add(new Node(newi, as.dist[i]));
+                    graph[newi][newj] = as.dist[i];
+                }
+            }
+        }
+
+        // Printing the new sub graph
+        for(int j=0;j<M+1;j++){
+            DPQ dpq = new DPQ(M+1);
+            dpq.dijkstra(starSubAdj, j);
+            System.out.println("The shortest path from node :");
+            for( int i = 0; i < dpq.dist.length; i++){
+                int oldj = destinations[j];
+                int oldi = destinations[i];
+                System.out.println(oldj + " to " + oldi + " is " + dpq.dist[i]);
+            }
+            if(j!=0){
+                arr[indexCounter] = destinations[j];
+                indexCounter++;
+            }
+        }
         TSP solver = new TSP(0, graph);
 
-        // Prints: [0, 3, 2, 4, 1, 5, 0]
         System.out.println("Tour: " + solver.getTour());
 
-        // Print: 42.0
         System.out.println("Tour cost: " + solver.getTourCost());
+        long starEndTime = System.currentTimeMillis();
+        System.out.println("Dijkstra Runtime: " +  Double.toString(starEndTime - starStartTime));
     }
 }
