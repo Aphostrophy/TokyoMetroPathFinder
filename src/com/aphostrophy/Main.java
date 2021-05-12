@@ -84,7 +84,7 @@ public class Main {
         for(int i=0;i<M+1;i++){
             System.out.println(destinations[i]);
         }
-        long startTime = System.nanoTime();
+        Long startTime = System.nanoTime();
 
         for(int j=0;j<V;j++) {
             DPQ dpq = new DPQ(V);
@@ -94,8 +94,6 @@ public class Main {
             // from the source node
 //            System.out.println("The shortest path from node :");
             for (int i = 0; i < dpq.dist.length; i++) {
-                System.out.println(j + " to " + i + " is "
-                        + dpq.dist[i]);
                 if (DPQ.contains(destinations, j, i)) {
                     int newj = DPQ.getId(destinations, j);
                     int newi = DPQ.getId(destinations, i);
@@ -106,27 +104,27 @@ public class Main {
         }
 
         // Printing the new sub graph
-        for(int j=0;j<M+1;j++){
-            DPQ dpq = new DPQ(M+1);
-            dpq.dijkstra(subAdj, j);
-            if(j!=0){
-                arr[indexCounter] = destinations[j];
-                indexCounter++;
-            }
-        }
-        long endTime = System.nanoTime();
-        System.out.println("Dijkstra Runtime: " +  Double.toString((endTime - startTime)/1000000) + " milisecond");
+//        for(int j=0;j<M+1;j++){
+//            DPQ dpq = new DPQ(M+1);
+//            dpq.dijkstra(subAdj, j);
+//            if(j!=0){
+//                arr[indexCounter] = destinations[j];
+//                indexCounter++;
+//            }
+//        }
+        Long endTime = System.nanoTime();
+        System.out.println("Dijkstra Runtime: " +  Double.toString((endTime.doubleValue() - startTime.doubleValue())/1000000) + " milisecond");
         startTime = System.nanoTime();
         System.out.println("Cost : " + GFG.travellingSalesmanProblem(graph,0,M+1));
         endTime = System.nanoTime();
 
-        System.out.println("BF Runtime: " +  Double.toString((endTime - startTime)/1000000) + " milisecond");
+        System.out.println("BF Runtime: " +  Double.toString((endTime.doubleValue() - startTime.doubleValue())/1000000) + " milisecond");
 
         graph = new double[M+1][M+1];
 //        arr = new int[M];
 //        indexCounter = 0;
 
-        long starStartTime = System.nanoTime();
+        Long starStartTime = System.nanoTime();
 
         for(int j=0;j<V;j++) {
             AS as = new AS(V);
@@ -152,16 +150,14 @@ public class Main {
 //                indexCounter++;
 //            }
 //        }
-        long starEndTime = System.nanoTime();
-        System.out.println("AStar Runtime: " +  Double.toString((starEndTime - starStartTime)/1000000) + " milisecond");
+        Long starEndTime = System.nanoTime();
+        System.out.println("AStar Runtime: " +  Double.toString((starEndTime.doubleValue() - starStartTime.doubleValue())/1000000) + " milisecond");
 
         starStartTime = System.nanoTime();
         TSP solver = new TSP(0, graph);
 
-        System.out.println(solver.getTour());
-
         System.out.println("Tour cost: " + solver.getTourCost());
         starEndTime = System.nanoTime();
-        System.out.println("DP Runtime: " +  Double.toString((starEndTime - starStartTime)/1000000) + " milisecond");
+        System.out.println("DP Runtime: " +  Double.toString((starEndTime.doubleValue() - starStartTime.doubleValue())/1000000) + " milisecond");
     }
 }
